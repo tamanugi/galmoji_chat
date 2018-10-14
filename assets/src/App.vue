@@ -4,18 +4,18 @@
     .messages_wrapper
       .scroll_wrap
         .messages
-          .message(v-for="message in messages")
+          .message(v-for="messageObj in messages")
             .header
               .avatar
                 .image
               .meta
-                span.username tamanugi
-                time.timestamp 2018/10/12 10:00:00
+                span.username {{messageObj.username}}
+                time.timestamp {{messageObj.posted_at}}
             .content
-              .markup {{message}}
+              .markup {{messageObj.message}}
     .message_form_wrapper
-      input(type=text, v-model="input_message")
-      button(@click="shoutMessage") 送信
+      input.input_username(type=text, v-model="input_username")
+      input.input_message(type=text, v-model="input_message", @keydown="shoutMessage")
   .members
 </template>
 
@@ -27,15 +27,20 @@ export default {
   data: function () {
     return {
       channel: {},
-      messages: ['hoge', 'hoge2'],
+      messages: [],
+      input_username: '',
       input_message: ''
     }
   },
   methods: {
-    shoutMessage: function () {
+    shoutMessage: function (event) {
+      if (event.keyCode !== 13) {
+        return
+      }
       console.log(this.input_message)
       if (this.input_message) {
-        this.channel.push('shout', {message: this.input_message})
+        let username = this.input_username || 'ギャル'
+        this.channel.push('shout', {username: username, message: this.input_message})
         this.input_message = ''
       }
     }
@@ -47,7 +52,7 @@ export default {
 
     channel.on('shout', payload => {
       console.log(payload)
-      this.messages.push(payload.message)
+      this.messages.push(payload)
     })
 
     channel.join()

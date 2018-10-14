@@ -1,5 +1,6 @@
 defmodule GalmojiChatWeb.RoomChannel do
   use GalmojiChatWeb, :channel
+  use Timex
 
   alias GalmojiChat.Galmoji.Translator
 
@@ -20,15 +21,21 @@ defmodule GalmojiChatWeb.RoomChannel do
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (room:lobby).
   def handle_in("shout", payload, socket) do
-    %{"message" => message} = payload
+    %{"username" => username, "message" => message} = payload
     _message = message 
     |> Translator.translate 
-    broadcast socket, "shout", %{message: _message}
+
+    broadcast socket, "shout", %{username: username, message: _message, posted_at: now_string()}
     {:noreply, socket}
   end
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
+  end
+
+  defp now_string() do
+    Timex.now("Asia/Tokyo")
+    |> Timex.format!("{YYYY}/{0M}/{0D} {h24}:{0m}")
   end
 end
