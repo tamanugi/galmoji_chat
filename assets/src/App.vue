@@ -4,6 +4,9 @@
     .messages_wrapper
       .scroll_wrap
         .messages
+          .welcome_message
+            h1.welcome_header
+              | ､ｷ″ゃゑもι″ちゃっー⊂ (●･∀･)人(･∀･○)
           .message(v-for="messageObj in messages")
             .header
               .avatar
@@ -36,10 +39,12 @@ export default {
   },
   methods: {
     shoutMessage: function (e) {
-      if (e.target.value !== this.input_message ) {
+      // まだ入力中の場合(漢字変換中にenter押された場合など)
+      if (e.target.value !== this.input_message) {
         return
       }
 
+      // shiftkeyが押されていたら改行
       if (e.shiftKey) {
         return
       }
@@ -74,6 +79,9 @@ export default {
 </script>
 
 <style lang="stylus">
+body
+  background-color #202225
+
 .flex
   display flex
 
@@ -84,11 +92,13 @@ export default {
   flex-direction row
   color #ffffff
   margin 0 auto
+  height 100%
 
 .board
   display flex
   flex-direction column
   flex 1
+  height 100%
 
 .message_form_wrapper
   border-top 1px solid hsla(0,0%,100%,.06)
@@ -132,6 +142,15 @@ export default {
 
   .scroll_wrap
     width 100%
+
+  .welcome_message
+    .welcome_header
+      margin-left 20px
+      color #7289da
+      font-size 18px
+      font-weight 700
+      margin-bottom 30px
+      text-transform uppercase
 
   .message
     margin-bottom .2em
